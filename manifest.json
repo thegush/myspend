@@ -1,0 +1,10 @@
+{
+  "name": "MySpend \u2014 Household Expenses",
+  "short_name": "MySpend",
+  "description": "Private local-first household expense tracker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8f6",
+  "theme_color": "#163b31",
+  "icons": []
+}

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#163b31">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MySpend">
+<link rel="manifest" href="manifest.json">
+<title>MySpend — Household expenses</title>
+<style>
+:root{--ink:#182a24;--muted:#697770;--green:#1e5b48;--mint:#e3f1e9;--line:#e1e8e3;--paper:#f6f8f6;--white:#fff;--orange:#b96b27;--red:#a43d3d}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{background:var(--green);color:white;padding:calc(18px + env(safe-area-inset-top)) 18px 20px;border-radius:0 0 24px 24px}
+.topline{display:flex;align-items:center;justify-content:space-between}.brand{font-size:22px;font-weight:750;letter-spacing:-.5px}.month-select{display:flex;align-items:center;gap:8px;margin-top:22px}.month-select button{background:#ffffff20;border:0;color:white;border-radius:10px;padding:8px 12px;font-size:18px}.month-label{font-weight:650;flex:1;text-align:center}.eyebrow{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#cce3d7}.total{font-size:38px;font-weight:750;letter-spacing:-1px;margin:5px 0 15px}.budgetrow{display:flex;gap:10px}.budgetbox{background:#ffffff18;border:1px solid #ffffff22;border-radius:14px;padding:11px 12px;flex:1;min-width:0}.budgetbox small{display:block;color:#d7e9df;font-size:12px}.budgetbox strong{display:block;margin-top:4px;font-size:17px}.progress{height:6px;background:#ffffff30;border-radius:8px;overflow:hidden;margin-top:10px}.progress span{display:block;height:100%;background:#bfe5ce;width:0}
+main{max-width:680px;margin:0 auto;padding:18px 15px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 12px}.sectionhead h2{font-size:17px;margin:0}.muted{color:var(--muted);font-size:13px}.card{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px #102b1710}.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{border:1px solid var(--line);background:white;border-radius:15px;padding:15px;text-align:left;color:var(--ink);font:inherit;cursor:pointer}.action b{display:block;margin-top:8px}.action span{font-size:24px}.category-row{margin:14px 0}.catline{display:flex;justify-content:space-between;gap:10px;font-size:14px}.track{height:7px;background:#edf1ee;border-radius:8px;margin-top:7px;overflow:hidden}.track span{height:100%;display:block;background:var(--green);border-radius:8px}.transaction{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #edf0ed}.transaction:last-child{border-bottom:0}.cat-icon{width:42px;height:42px;border-radius:13px;background:var(--mint);display:grid;place-items:center;font-size:20px;flex-shrink:0}.tx-main{flex:1;min-width:0}.tx-title{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tx-sub{font-size:12px;color:var(--muted);margin-top:4px}.tx-amount{text-align:right;font-weight:700;white-space:nowrap}.smallbtn{border:1px solid var(--line);background:white;color:var(--green);border-radius:10px;padding:8px 10px;font-weight:650}.tabs{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#ffffffed;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 8px calc(9px + env(safe-area-inset-bottom));display:flex;justify-content:space-around}.tab{background:none;border:0;color:var(--muted);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:3px 12px}.tab span{font-size:21px}.tab.active{color:var(--green);font-weight:750}
+.view{display:none}.view.active{display:block}label{display:block;font-size:13px;font-weight:650;margin:13px 0 6px}input,select,textarea{font:inherit;width:100%;padding:12px;border:1px solid #d5dfd8;border-radius:11px;background:white;color:var(--ink)}input[type=file]{padding:9px;font-size:13px}input[type=checkbox]{width:auto}textarea{min-height:75px;resize:vertical}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.primary{width:100%;border:0;background:var(--green);color:white;border-radius:12px;padding:14px;font:inherit;font-weight:750;margin-top:17px}.secondary{border:1px solid var(--line);background:white;color:var(--green);border-radius:11px;padding:11px;font:inherit;font-weight:650}.danger{color:var(--red);border-color:#efd1d1}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar>*{flex:1}.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:22px 8px}.receipt-preview{max-width:100%;max-height:180px;border-radius:10px;margin-top:8px}.note{background:#fff6e9;border:1px solid #f0dfc2;color:#77501e;border-radius:12px;padding:12px;font-size:13px;line-height:1.4}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:white;border:1px solid var(--line);padding:14px;border-radius:14px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:21px;margin-top:7px}.modalback{position:fixed;inset:0;background:#10251dcc;z-index:20;display:none;align-items:flex-end;justify-content:center}.modalback.open{display:flex}.modal{background:var(--paper);border-radius:22px 22px 0 0;width:100%;max-width:680px;max-height:92dvh;overflow:auto;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0;font-size:20px}.close{border:0;background:#e8eeea;border-radius:50%;width:36px;height:36px;font-size:20px}.hint{font-size:12px;color:var(--muted);line-height:1.45;margin-top:7px}
+@media(min-width:600px){main{padding:22px}.modalback{align-items:center}.modal{border-radius:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="topline"><div class="brand">🌿 MySpend</div><button class="smallbtn" style="background:#ffffff18;color:white;border-color:#ffffff40" onclick="openSettings()">⚙ Settings</button></div>
+  <div class="month-select"><button onclick="changeMonth(-1)" aria-label="Previous month">‹</button><div class="month-label" id="monthLabel">October 2026</div><button onclick="changeMonth(1)" aria-label="Next month">›</button></div>
+  <div class="eyebrow">Total household expenses</div><div class="total" id="monthTotal">€0.00</div>
+  <div class="budgetrow">
+    <div class="budgetbox"><small>Monthly budget</small><strong id="budgetValue">Not set</strong></div>
+    <div class="budgetbox"><small>Budget remaining</small><strong id="remainingValue">—</strong><div class="progress"><span id="budgetProgress"></span></div></div>
+  </div>
+</header>
+<main>
+  <section id="dashboardView" class="view active">
+    <div class="sectionhead"><h2>Quick add</h2><span class="muted">A few taps</span></div>
+    <div class="quick-actions">
+      <button class="action" onclick="openExpense()"><span>＋</span><b>Add expense</b><small class="muted">Enter a purchase</small></button>
+      <button class="action" onclick="openExpense(true)"><span>📷</span><b>Scan receipt</b><small class="muted">Attach a photo</small></button>
+    </div>
+    <div class="sectionhead"><h2>Spending by category</h2><span class="muted" id="categoryTotal"></span></div>
+    <div class="card" id="categoryBreakdown"><div class="empty">No expenses this month yet.</div></div>
+    <div class="sectionhead"><h2>Recent transactions</h2><button class="smallbtn" onclick="showView('transactions')">See all</button></div>
+    <div class="card" id="recentTransactions"><div class="empty">Your expenses will appear here.</div></div>
+  </section>
+  <section id="transactionsView" class="view">
+    <div class="sectionhead"><h2>Transactions</h2><button class="smallbtn" onclick="openExpense()">＋ Add</button></div>
+    <div class="card">
+      <label for="searchTx">Search merchant, notes or category</label><input id="searchTx" placeholder="e.g. Lidl, groceries…" oninput="renderTransactions()">
+      <div class="formgrid"><div><label for="filterCategory">Category</label><select id="filterCategory" onchange="renderTransactions()"><option value="">All categories</option></select></div><div><label for="filterPayer">Paid by</label><select id="filterPayer" onchange="renderTransactions()"><option value="">Everyone</option><option>You</option><option>Spouse</option><option>Joint</option></select></div></div>
+    </div>
+    <div class="card" id="allTransactions"></div>
+  </section>
+  <section id="reportsView" class="view">
+    <div class="sectionhead"><h2>Monthly reports</h2><span class="muted">EUR (€)</span></div>
+    <div class="stats"><div class="stat"><small>Transactions</small><strong id="reportCount">0</strong></div><div class="stat"><small>Average expense</small><strong id="reportAverage">€0.00</strong></div><div class="stat"><small>Paid by you</small><strong id="reportYou">€0.00</strong></div><div class="stat"><small>Paid by spouse</small><strong id="reportSpouse">€0.00</strong></div></div>
+    <div class="sectionhead"><h2>Month-by-month</h2></div><div class="card" id="monthlyHistory"></div>
+    <div class="sectionhead"><h2>Backup and sharing</h2></div>
+    <div class="card">
+      <p class="muted">Export the household ledger to a JSON backup and import it on your spouse's phone. Exporting includes receipt photos, so backups can be large. Keep backups somewhere private.</p>
+      <div class="toolbar"><button class="secondary" onclick="exportBackup()">Export backup</button><button class="secondary" onclick="document.getElementById('importFile').click()">Import backup</button></div>
+      <label for="importFile" class="hidden">Choose backup file</label><input id="importFile" class="hidden" type="file" accept=".json,application/json" onchange="importBackup(event)">
+      <div class="hint">For sharing: export from one phone, send the file privately, then import it on the other phone. Avoid editing both copies independently, because this starter version does not automatically merge changes.</div>
+    </div>
+  </section>
+  <section id="settingsView" class="view">
+    <div class="sectionhead"><h2>Settings</h2></div>
+    <div class="card">
+      <label for="monthlyBudget">Monthly household budget (€)</label><input id="monthlyBudget" type="number" min="0" step="0.01" placeholder="e.g. 1500">
+      <label for="yourName">Your display name</label><input id="yourName" placeholder="You">
+      <label for="spouseName">Spouse display name</label><input id="spouseName" placeholder="Spouse">
+      <button class="primary" onclick="saveSettings()">Save settings</button>
+    </div>
+    <div class="card">
+      <h3>Data and privacy</h3>
+      <p class="muted">This app stores expenses in this browser on this device. It does not send your records to a server. Browser storage can be removed by device/browser cleanup, so export backups regularly. Receipt images are stored inside the local database and can increase its size.</p>
+      <div class="toolbar"><button class="secondary" onclick="exportBackup()">Export backup</button><button class="secondary danger" onclick="clearAllData()">Delete all data</button></div>
+    </div>
+    <div class="note">Shared use is currently backup-based, not live synchronization. For two phones, import the latest shared backup on the device that needs the updated ledger.</div>
+  </section>
+</main>
+<nav class="tabs">
+  <button class="tab active" data-view="dashboard" onclick="showView('dashboard')"><span>⌂</span>Home</button>
+  <button class="tab" data-view="transactions" onclick="showView('transactions')"><span>☷</span>History</button>
+  <button class="tab" data-view="reports" onclick="showView('reports')"><span>▥</span>Reports</button>
+  <button class="tab" data-view="settings" onclick="showView('settings')"><span>⚙</span>Settings</button>
+</nav>
+<div class="modalback" id="expenseModal" onclick="if(event.target===this)closeExpense()">
+  <div class="modal">
+    <div class="modalhead"><h2 id="expenseTitle">Add expense</h2><button class="close" onclick="closeExpense()">×</button></div>
+    <form id="expenseForm" onsubmit="saveExpense(event)">
+      <input type="hidden" id="expenseId">
+      <label for="amount">Amount (€) *</label><input id="amount" type="number" inputmode="decimal" min="0.01" step="0.01" required placeholder="0.00">
+      <div class="formgrid"><div><label for="date">Date *</label><input id="date" type="date" required></div><div><label for="category">Category *</label><select id="category" required></select></div></div>
+      <label for="merchant">Merchant / description *</label><input id="merchant" required maxlength="100" placeholder="e.g. Lidl groceries">
+      <div class="formgrid"><div><label for="payer">Paid by</label><select id="payer"><option value="You">You</option><option value="Spouse">Spouse</option><option value="Joint">Joint account</option></select></div><div><label for="payment">Payment method</label><select id="payment"><option>Debit card</option><option>Credit card</option><option>Cash</option><option>PayPal</option><option>Bank transfer</option><option>Other</option></select></div></div>
+      <label for="notes">Notes (optional)</label><textarea id="notes" placeholder="Optional details"></textarea>
+      <label for="receipt">Receipt photo (optional)</label><input id="receipt" type="file" accept="image/*" capture="environment">
+      <img id="receiptPreview" class="receipt-preview hidden" alt="Receipt preview">
+      <div class="hint">Receipt photos stay on this device and are included in JSON backups. This first version attaches the photo; it does not automatically read the receipt.</div>
+      <div class="toolbar" style="margin-top:14px"><button type="button" class="secondary" onclick="closeExpense()">Cancel</button><button type="submit" class="primary" style="margin-top:0">Save expense</button></div>
+      <button type="button" id="deleteExpenseButton" class="secondary danger hidden" style="width:100%;margin-top:10px" onclick="deleteCurrentExpense()">Delete expense</button>
+    </form>
+  </div>
+</div>
+<script>
+const CATEGORIES=[
+ {name:"Groceries",icon:"🛒"},{name:"Restaurants & takeaway",icon:"🍽️"},{name:"Household",icon:"🧹"},{name:"Transport",icon:"🚗"},{name:"Utilities",icon:"💡"},{name:"Rent & mortgage",icon:"🏠"},{name:"Shopping",icon:"🛍️"},{name:"Health",icon:"💊"},{name:"Subscriptions",icon:"📱"},{name:"Travel",icon:"✈️"},{name:"Entertainment",icon:"🎬"},{name:"Other",icon:"📦"}
+];
+const DB_NAME="myspend-db", DB_VERSION=1, STORE="records";
+let db, monthCursor=new Date(), receiptData=null, settings={budget:0,yourName:"You",spouseName:"Spouse"};
+let transactions=[];
+const $=id=>document.getElementById(id);
+function euro(n){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(n)||0)}
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function monthKey(date){return String(date).slice(0,7)}
+function selectedMonth(){return `${monthCursor.getFullYear()}-${String(monthCursor.getMonth()+1).padStart(2,"0")}`}
+function prettyMonth(key){return new Date(key+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"})}
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:"id"})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+function allRecords(){return new Promise((resolve,reject)=>{const req=db.transaction(STORE,"readonly").objectStore(STORE).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)})}
+function putRecord(record){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function deleteRecord(id){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function replaceAll(records){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite"),s=tx.objectStore(STORE);s.clear();records.forEach(r=>s.put(r));tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+async function init(){try{db=await openDB();transactions=await allRecords();loadSettings();populateCategories();renderAll();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});}catch(e){alert("Could not initialize local storage. Please open this app in a modern browser.");console.error(e)}}
+function populateCategories(){["category","filterCategory"].forEach(id=>{const s=$(id);const first=s.options[0]?.outerHTML||"";s.innerHTML=first;CATEGORIES.forEach(c=>{const o=document.createElement("option");o.value=c.name;o.textContent=c.name;s.appendChild(o)})})}
+function loadSettings(){try{settings={...settings,...JSON.parse(localStorage.getItem("myspend-settings")||"{}")}}catch{}$("monthlyBudget").value=settings.budget||"";$("yourName").value=settings.yourName||"You";$("spouseName").value=settings.spouseName||"Spouse";$("payer").options[0].textContent=settings.yourName||"You";$("payer").options[1].textContent=settings.spouseName||"Spouse"}
+function saveSettings(){settings={budget:Number($("monthlyBudget").value)||0,yourName:$("yourName").value.trim()||"You",spouseName:$("spouseName").value.trim()||"Spouse"};localStorage.setItem("myspend-settings",JSON.stringify(settings));loadSettings();renderAll();alert("Settings saved on this device.")}
+function showView(view){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$(view+"View").classList.add("active");document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===view));if(view==="transactions")renderTransactions();if(view==="reports")renderReports();window.scrollTo({top:0,behavior:"smooth"})}
+function openSettings(){showView("settings")}
+function changeMonth(delta){monthCursor=new Date(monthCursor.getFullYear(),monthCursor.getMonth()+delta,1);renderAll()}
+function currentMonthRecords(){return transactions.filter(t=>monthKey(t.date)===selectedMonth())}
+function renderAll(){const key=selectedMonth(),list=currentMonthRecords(),total=list.reduce((s,t)=>s+Number(t.amount),0);$("monthLabel").textContent=prettyMonth(key);$("monthTotal").textContent=euro(total);$("budgetValue").textContent=settings.budget?euro(settings.budget):"Not set";$("remainingValue").textContent=settings.budget?euro(settings.budget-total):"—";$("budgetProgress").style.width=settings.budget?Math.min(100,total/settings.budget*100)+"%":"0";$("categoryTotal").textContent=list.length+" expenses";renderCategories(list,total);renderRecent(list);renderTransactions();renderReports()}
+function renderCategories(list,total){const sums={};list.forEach(t=>sums[t.category]=(sums[t.category]||0)+Number(t.amount));const entries=Object.entries(sums).sort((a,b)=>b[1]-a[1]);$("categoryBreakdown").innerHTML=entries.length?entries.map(([name,value])=>{const c=CATEGORIES.find(c=>c.name===name)||CATEGORIES.at(-1);return `<div class="category-row"><div class="catline"><span>${c.icon} ${esc(name)}</span><strong>${euro(value)}</strong></div><div class="track"><span style="width:${total?value/total*100:0}%"></span></div></div>`}).join(""):'<div class="empty">No expenses this month yet.</div>'}
+function transactionHTML(t){const c=CATEGORIES.find(c=>c.name===t.category)||CATEGORIES.at(-1);const who=t.payer==="You"?(settings.yourName||"You"):t.payer==="Spouse"?(settings.spouseName||"Spouse"):"Joint";return `<div class="transaction" onclick="editExpense('${t.id}')"><div class="cat-icon">${c.icon}</div><div class="tx-main"><div class="tx-title">${esc(t.merchant)}</div><div class="tx-sub">${esc(t.date)} · ${esc(t.category)} · ${esc(who)}${t.receipt?" · 📷":""}</div></div><div class="tx-amount">${euro(t.amount)}<div class="tx-sub">Tap to edit</div></div></div>`}
+function renderRecent(list){const sorted=[...list].sort((a,b)=>b.date.localeCompare(a.date)||b.updatedAt-a.updatedAt).slice(0,5);$("recentTransactions").innerHTML=sorted.length?sorted.map(transactionHTML).join(""):'<div class="empty">Your expenses will appear here.</div>'}
+function renderTransactions(){if(!$("allTransactions"))return;const q=($("searchTx")?.value||"").toLowerCase(),cat=$("filterCategory")?.value||"",payer=$("filterPayer")?.value||"";const list=[...transactions].filter(t=>(!q||[t.merchant,t.notes,t.category].join(" ").toLowerCase().includes(q))&&(!cat||t.category===cat)&&(!payer||t.payer===payer)).sort((a,b)=>b.date.localeCompare(a.date)||b.updatedAt-a.updatedAt);$("allTransactions").innerHTML=list.length?list.map(transactionHTML).join(""):'<div class="empty">No matching expenses.</div>'}
+function renderReports(){const list=currentMonthRecords(),total=list.reduce((s,t)=>s+Number(t.amount),0),you=list.filter(t=>t.payer==="You").reduce((s,t)=>s+Number(t.amount),0),spouse=list.filter(t=>t.payer==="Spouse").reduce((s,t)=>s+Number(t.amount),0);$("reportCount").textContent=list.length;$("reportAverage").textContent=euro(list.length?total/list.length:0);$("reportYou").textContent=euro(you);$("reportSpouse").textContent=euro(spouse);const months={};transactions.forEach(t=>months[monthKey(t.date)]=(months[monthKey(t.date)]||0)+Number(t.amount));const entries=Object.entries(months).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,8);const max=Math.max(1,...entries.map(x=>x[1]));$("monthlyHistory").innerHTML=entries.length?entries.map(([m,v])=>`<div class="category-row"><div class="catline"><span>${prettyMonth(m)}</span><strong>${euro(v)}</strong></div><div class="track"><span style="width:${v/max*100}%"></span></div></div>`).join(""):'<div class="empty">Add expenses to see your history.</div>'}
+function openExpense(scan=false){$("expenseForm").reset();$("expenseId").value="";$("expenseTitle").textContent=scan?"Scan / attach receipt":"Add expense";$("date").value=localDate();$("category").value="Groceries";$("payer").value="You";$("receiptPreview").classList.add("hidden");$("receiptPreview").src="";$("deleteExpenseButton").classList.add("hidden");receiptData=null;$("expenseModal").classList.add("open");setTimeout(()=>(scan?$("receipt"):$("amount")).focus(),150)}
+function closeExpense(){$("expenseModal").classList.remove("open");receiptData=null}
+async function editExpense(id){const t=transactions.find(x=>x.id===id);if(!t)return;$("expenseForm").reset();$("expenseId").value=t.id;$("expenseTitle").textContent="Edit expense";$("amount").value=t.amount;$("date").value=t.date;$("category").value=t.category;$("merchant").value=t.merchant;$("payer").value=t.payer;$("payment").value=t.payment||"Debit card";$("notes").value=t.notes||"";receiptData=t.receipt||null;if(receiptData){$("receiptPreview").src=receiptData;$("receiptPreview").classList.remove("hidden")}else{$("receiptPreview").classList.add("hidden");$("receiptPreview").src=""}$("deleteExpenseButton").classList.remove("hidden");$("expenseModal").classList.add("open")}
+$("receipt").addEventListener("change",async e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")){alert("Please select an image file.");return}if(f.size>8*1024*1024){alert("Please choose an image smaller than 8 MB.");e.target.value="";return}receiptData=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)});$("receiptPreview").src=receiptData;$("receiptPreview").classList.remove("hidden")});
+async function saveExpense(e){e.preventDefault();const id=$("expenseId").value||crypto.randomUUID();const existing=transactions.find(t=>t.id===id);const chosenFile=$("receipt").files?.[0];let receipt=receiptData;if(!chosenFile&&existing&&receipt===null)receipt=existing.receipt||null;const t={id,amount:Math.round(Number($("amount").value)*100)/100,date:$("date").value,category:$("category").value,merchant:$("merchant").value.trim(),payer:$("payer").value,payment:$("payment").value,notes:$("notes").value.trim(),receipt,createdAt:existing?.createdAt||Date.now(),updatedAt:Date.now()};if(!t.amount||t.amount<=0||!t.merchant){alert("Enter a valid amount and merchant.");return}try{await putRecord(t);transactions=await allRecords();closeExpense();renderAll()}catch(err){alert("Could not save. Your browser may be low on storage. Export a backup and try a smaller receipt image.");console.error(err)}}
+async function deleteCurrentExpense(){const id=$("expenseId").value;if(!id)return;if(!confirm("Delete this expense permanently from this device?"))return;await deleteRecord(id);transactions=await allRecords();closeExpense();renderAll()}
+function exportBackup(){const payload={app:"MySpend",version:1,exportedAt:new Date().toISOString(),settings,transactions};const blob=new Blob([JSON.stringify(payload)],{type:"application/json"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="myspend-backup-"+localDate()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function importBackup(event){const f=event.target.files?.[0];if(!f)return;try{const payload=JSON.parse(await f.text());if(!payload||payload.app!=="MySpend"||!Array.isArray(payload.transactions))throw new Error("This does not look like a MySpend backup.");if(!confirm(`Merge ${payload.transactions.length} transactions from this backup into the ledger on this device? Existing transactions with the same ID will keep the newest version. Export a backup first if you want a safety copy.`))return;const valid=payload.transactions.filter(t=>t&&typeof t.id==="string"&&Number(t.amount)>0&&typeof t.date==="string"&&typeof t.merchant==="string");const current=await allRecords();const byId=new Map(current.map(t=>[t.id,t]));for(const incoming of valid){const old=byId.get(incoming.id);if(!old||Number(incoming.updatedAt||0)>=Number(old.updatedAt||0))byId.set(incoming.id,incoming)}await replaceAll([...byId.values()]);transactions=await allRecords();if(payload.settings){settings={...settings,...payload.settings};localStorage.setItem("myspend-settings",JSON.stringify(settings));loadSettings()}renderAll();alert(`Backup merged successfully. Ledger now contains ${transactions.length} transactions.`)}catch(err){alert("Import failed: "+err.message)}finally{event.target.value=""}}
+async function clearAllData(){if(!confirm("This deletes every transaction and receipt stored in this browser. Export a backup first. Continue?"))return;if(!confirm("Final confirmation: permanently delete all MySpend data on this device?"))return;await replaceAll([]);transactions=[];renderAll();alert("All local transactions deleted.")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+init();
+</script>
+</body>
+</html>
