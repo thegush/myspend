@@ -64,7 +64,7 @@ main{max-width:680px;margin:0 auto;padding:18px 15px}.sectionhead{display:flex;j
   <section id="settingsView" class="view">
     <div class="sectionhead"><h2>Settings</h2></div>
     <div class="card">
-      <label for="monthlyBudget">Monthly household budget (€)</label><input id="monthlyBudget" type="number" min="0" step="0.01" placeholder="e.g. 1500">
+      <label for="monthlyBudget">Monthly household budget (€)</label><input id="monthlyBudget" type="text" inputmode="decimal" placeholder="z. B. 1.500,00">
       <label for="yourName">Your display name</label><input id="yourName" placeholder="You">
       <label for="spouseName">Spouse display name</label><input id="spouseName" placeholder="Spouse">
       <button class="primary" onclick="saveSettings()">Save settings</button>
@@ -109,6 +109,30 @@ const DB_NAME="myspend-db", DB_VERSION=1, STORE="records";
 let db, monthCursor=new Date(), receiptData=null, settings={budget:0,yourName:"You",spouseName:"Spouse"};
 let transactions=[];
 const $=id=>document.getElementById(id);
+function parseAmount(value) {
+  let s = String(value ?? "").trim().replace(/[€\s]/g, "");
+  if (!s) return NaN;
+
+  const comma = s.lastIndexOf(",");
+  const dot = s.lastIndexOf(".");
+
+  if (comma >= 0 && dot >= 0) {
+    s = comma > dot
+      ? s.replace(/\./g, "").replace(",", ".")
+      : s.replace(/,/g, "");
+  } else if (comma >= 0) {
+    s = s.replace(/\./g, "").replace(",", ".");
+  } else if (dot >= 0) {
+    const parts = s.split(".");
+    if (parts.length > 2 ||
+        (parts.length === 2 && parts[1].length === 3)) {
+      s = parts.join("");
+    }
+  }
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}  
 function euro(n){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(n)||0)}
 function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function monthKey(date){return String(date).slice(0,7)}
@@ -122,7 +146,7 @@ function replaceAll(records){return new Promise((resolve,reject)=>{const tx=db.t
 async function init(){try{db=await openDB();transactions=await allRecords();loadSettings();populateCategories();renderAll();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});}catch(e){alert("Could not initialize local storage. Please open this app in a modern browser.");console.error(e)}}
 function populateCategories(){["category","filterCategory"].forEach(id=>{const s=$(id);const first=s.options[0]?.outerHTML||"";s.innerHTML=first;CATEGORIES.forEach(c=>{const o=document.createElement("option");o.value=c.name;o.textContent=c.name;s.appendChild(o)})})}
 function loadSettings(){try{settings={...settings,...JSON.parse(localStorage.getItem("myspend-settings")||"{}")}}catch{}$("monthlyBudget").value=settings.budget||"";$("yourName").value=settings.yourName||"You";$("spouseName").value=settings.spouseName||"Spouse";$("payer").options[0].textContent=settings.yourName||"You";$("payer").options[1].textContent=settings.spouseName||"Spouse"}
-function saveSettings(){settings={budget:Number($("monthlyBudget").value)||0,yourName:$("yourName").value.trim()||"You",spouseName:$("spouseName").value.trim()||"Spouse"};localStorage.setItem("myspend-settings",JSON.stringify(settings));loadSettings();renderAll();alert("Settings saved on this device.")}
+function saveSettings(){settings={budget:parseAmount($("monthlyBudget").value)||0,yourName:$("yourName").value.trim()||"You",spouseName:$("spouseName").value.trim()||"Spouse"};localStorage.setItem("myspend-settings",JSON.stringify(settings));loadSettings();renderAll();alert("Settings saved on this device.")}
 function showView(view){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$(view+"View").classList.add("active");document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===view));if(view==="transactions")renderTransactions();if(view==="reports")renderReports();window.scrollTo({top:0,behavior:"smooth"})}
 function openSettings(){showView("settings")}
 function changeMonth(delta){monthCursor=new Date(monthCursor.getFullYear(),monthCursor.getMonth()+delta,1);renderAll()}
@@ -137,7 +161,7 @@ function openExpense(scan=false){$("expenseForm").reset();$("expenseId").value="
 function closeExpense(){$("expenseModal").classList.remove("open");receiptData=null}
 async function editExpense(id){const t=transactions.find(x=>x.id===id);if(!t)return;$("expenseForm").reset();$("expenseId").value=t.id;$("expenseTitle").textContent="Edit expense";$("amount").value=t.amount;$("date").value=t.date;$("category").value=t.category;$("merchant").value=t.merchant;$("payer").value=t.payer;$("payment").value=t.payment||"Debit card";$("notes").value=t.notes||"";receiptData=t.receipt||null;if(receiptData){$("receiptPreview").src=receiptData;$("receiptPreview").classList.remove("hidden")}else{$("receiptPreview").classList.add("hidden");$("receiptPreview").src=""}$("deleteExpenseButton").classList.remove("hidden");$("expenseModal").classList.add("open")}
 $("receipt").addEventListener("change",async e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")){alert("Please select an image file.");return}if(f.size>8*1024*1024){alert("Please choose an image smaller than 8 MB.");e.target.value="";return}receiptData=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)});$("receiptPreview").src=receiptData;$("receiptPreview").classList.remove("hidden")});
-async function saveExpense(e){e.preventDefault();const id=$("expenseId").value||crypto.randomUUID();const existing=transactions.find(t=>t.id===id);const chosenFile=$("receipt").files?.[0];let receipt=receiptData;if(!chosenFile&&existing&&receipt===null)receipt=existing.receipt||null;const t={id,amount:Math.round(Number($("amount").value)*100)/100,date:$("date").value,category:$("category").value,merchant:$("merchant").value.trim(),payer:$("payer").value,payment:$("payment").value,notes:$("notes").value.trim(),receipt,createdAt:existing?.createdAt||Date.now(),updatedAt:Date.now()};if(!t.amount||t.amount<=0||!t.merchant){alert("Enter a valid amount and merchant.");return}try{await putRecord(t);transactions=await allRecords();closeExpense();renderAll()}catch(err){alert("Could not save. Your browser may be low on storage. Export a backup and try a smaller receipt image.");console.error(err)}}
+async function saveExpense(e){e.preventDefault();const id=$("expenseId").value||crypto.randomUUID();const existing=transactions.find(t=>t.id===id);const chosenFile=$("receipt").files?.[0];let receipt=receiptData;if(!chosenFile&&existing&&receipt===null)receipt=existing.receipt||null;const t={id,amount:Math.round(parseAmount($("amount").value)*100)/100,date:$("date").value,category:$("category").value,merchant:$("merchant").value.trim(),payer:$("payer").value,payment:$("payment").value,notes:$("notes").value.trim(),receipt,createdAt:existing?.createdAt||Date.now(),updatedAt:Date.now()};if(!t.amount||t.amount<=0||!t.merchant){alert("Enter a valid amount and merchant.");return}try{await putRecord(t);transactions=await allRecords();closeExpense();renderAll()}catch(err){alert("Could not save. Your browser may be low on storage. Export a backup and try a smaller receipt image.");console.error(err)}}
 async function deleteCurrentExpense(){const id=$("expenseId").value;if(!id)return;if(!confirm("Delete this expense permanently from this device?"))return;await deleteRecord(id);transactions=await allRecords();closeExpense();renderAll()}
 function exportBackup(){const payload={app:"MySpend",version:1,exportedAt:new Date().toISOString(),settings,transactions};const blob=new Blob([JSON.stringify(payload)],{type:"application/json"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="myspend-backup-"+localDate()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 async function importBackup(event){const f=event.target.files?.[0];if(!f)return;try{const payload=JSON.parse(await f.text());if(!payload||payload.app!=="MySpend"||!Array.isArray(payload.transactions))throw new Error("This does not look like a MySpend backup.");if(!confirm(`Merge ${payload.transactions.length} transactions from this backup into the ledger on this device? Existing transactions with the same ID will keep the newest version. Export a backup first if you want a safety copy.`))return;const valid=payload.transactions.filter(t=>t&&typeof t.id==="string"&&Number(t.amount)>0&&typeof t.date==="string"&&typeof t.merchant==="string");const current=await allRecords();const byId=new Map(current.map(t=>[t.id,t]));for(const incoming of valid){const old=byId.get(incoming.id);if(!old||Number(incoming.updatedAt||0)>=Number(old.updatedAt||0))byId.set(incoming.id,incoming)}await replaceAll([...byId.values()]);transactions=await allRecords();if(payload.settings){settings={...settings,...payload.settings};localStorage.setItem("myspend-settings",JSON.stringify(settings));loadSettings()}renderAll();alert(`Backup merged successfully. Ledger now contains ${transactions.length} transactions.`)}catch(err){alert("Import failed: "+err.message)}finally{event.target.value=""}}
