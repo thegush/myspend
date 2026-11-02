@@ -88,7 +88,7 @@ main{max-width:680px;margin:0 auto;padding:18px 15px}.sectionhead{display:flex;j
     <div class="modalhead"><h2 id="expenseTitle">Add expense</h2><button class="close" onclick="closeExpense()">×</button></div>
     <form id="expenseForm" onsubmit="saveExpense(event)">
       <input type="hidden" id="expenseId">
-      <label for="amount">Amount (€) *</label><input id="amount" type="number" inputmode="decimal" min="0.01" step="0.01" required placeholder="0.00">
+      <label for="amount">Amount (€) *</label><input id="amount" type="text" inputmode="decimal" required placeholder="z. B. 12,50">
       <div class="formgrid"><div><label for="date">Date *</label><input id="date" type="date" required></div><div><label for="category">Category *</label><select id="category" required></select></div></div>
       <label for="merchant">Merchant / description *</label><input id="merchant" required maxlength="100" placeholder="e.g. Lidl groceries">
       <div class="formgrid"><div><label for="payer">Paid by</label><select id="payer"><option value="You">You</option><option value="Spouse">Spouse</option><option value="Joint">Joint account</option></select></div><div><label for="payment">Payment method</label><select id="payment"><option>Debit card</option><option>Credit card</option><option>Cash</option><option>PayPal</option><option>Bank transfer</option><option>Other</option></select></div></div>
